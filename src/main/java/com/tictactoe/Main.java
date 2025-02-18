@@ -18,6 +18,8 @@ public class Main {
         }
         if(game.getGameState() == GameState.WIN){
             System.out.printf("%s wins!", game.getWinner().getName());
+            System.out.println("Winning Board");
+            game.getBoard().displayBoard();
         }
         else{
             System.out.println("Draw!");

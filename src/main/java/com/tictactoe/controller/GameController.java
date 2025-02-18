@@ -58,33 +58,9 @@ public class GameController {
 
         // 2: Gets the move from the current player into a "Cell" object
         System.out.printf("It is %s's turn\n", currentPlayer.getName());
-        Cell cell= currentPlayer.makeMove();
+        game.makeMoveForCurrentPlayer();
 
-        // 3: Update the board with the intended move (cell object), if it fails
-        //    then recurse.
-        try{
-            game.board.updateBoard(cell, currentPlayer);
-        } catch (Exception e){
-            System.out.printf("Not a valid move! Try again: %s", currentPlayer.getName());
-            makeNextMove();
-            return;
-        }
-
-        // Update move on that cell
-        game.updateMoves(cell);
-
-        // Check Winning Strategies
-        boolean isWin = game.getWinningStrategies().stream()
-                .anyMatch(winningStrategy -> winningStrategy.isWinning(game));
-
-        if(isWin){
-            // Store the winning player.
-            // Change the game state.
-            game.setWinner(currentPlayer);
-        }
-        else{
-            game.currPlayerIndex = currentPlayerIndex + 1;
-            game.currPlayerIndex %= game.getPlayerList().size();
-        }
+        // 4: Check all the winning strategies.
+        game.postMoveWinnerCheck();
     }
 }

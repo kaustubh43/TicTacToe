@@ -2,6 +2,7 @@ package main.java.com.tictactoe.models;
 
 import lombok.*;
 import main.java.com.tictactoe.strategy.ColumnWinningStrategy;
+import main.java.com.tictactoe.strategy.DiagonalWinningStrategy;
 import main.java.com.tictactoe.strategy.RowWinningStrategy;
 import main.java.com.tictactoe.strategy.WinningStrategy;
 
@@ -29,12 +30,8 @@ public class Game {
         this.moves = new ArrayList<>();
         this.gameState = GameState.INIT;
         winningStrategies = new ArrayList<>(List.of(new RowWinningStrategy(),
-                new ColumnWinningStrategy()));
-    }
-
-    public void setWinner(Player winner) {
-        this.winner = winner;
-        this.gameState = GameState.WIN;
+                new ColumnWinningStrategy(),
+                new DiagonalWinningStrategy()));
     }
 
     public void setDraw(){
@@ -44,8 +41,43 @@ public class Game {
     public void updateMoves(Cell cell) {
         moves.add(cell);
     }
-    //    public void changeTurn(){
-//        this.currPlayerIndex = (this.currPlayerIndex + 1) % playerList.size();
-//    }
+
+    /**
+     * This method makes the next player decide a move and updates the board.
+     * It updates the moves List as well.
+     */
+    public void makeMoveForCurrentPlayer() {
+        Player currentPlayer = playerList.get(currPlayerIndex);
+        // Get the move in Cell object format.
+        Cell cell= currentPlayer.makeMove();
+
+        // 3: Update the board with the intended move (cell object), if it fails
+        //    then recurse.
+        try{
+            this.board.updateBoard(cell, currentPlayer);
+            this.updateMoves(cell);      // Update moves on that cell
+        } catch (Exception e){
+            System.out.printf("Not a valid move! Try again: %s\n", currentPlayer.getName());
+            makeMoveForCurrentPlayer();
+        }
+    }
+
+    public void postMoveWinnerCheck() {
+        // Check Winning Strategies
+        boolean isWin = this.getWinningStrategies().stream()
+                .anyMatch(winningStrategy -> winningStrategy.isWinning(this));
+
+        Player currentPlayer = playerList.get(currPlayerIndex);
+        if(isWin){
+            // Store the winning player.
+            // Change the game state.
+            winner = currentPlayer;
+            gameState = GameState.WIN;
+        }
+        else{
+            this.currPlayerIndex = currPlayerIndex + 1;
+            this.currPlayerIndex %= this.getPlayerList().size();
+        }
+    }
 
 }

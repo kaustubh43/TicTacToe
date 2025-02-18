@@ -10,11 +10,17 @@ public class Main {
         Game game = GameController.InitialiseGame();
         GameController gc = new GameController(game);
 
-        while(game.getGameState().equals(GameState.IN_PROGRESS)){
+        while(game.getGameState() == GameState.IN_PROGRESS){
             game.getBoard().displayBoard();
             // Prints the next player's move.
             // Ask the user for an input.
             gc.makeNextMove();
+        }
+        if(game.getGameState() == GameState.WIN){
+            System.out.printf("%s wins!", game.getWinner().getName());
+        }
+        else{
+            System.out.println("Draw!");
         }
     }
 }

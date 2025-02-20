@@ -78,4 +78,18 @@ public class GameController {
         }
         return new HumanPlayer(playerName, playerSymbol.charAt(0), playerId + 1);
     }
+
+    public void undoLastMove(){
+        //1. Remove from the moves list.
+        Cell lastCellMove = game.moves.getLast();
+        game.moves.removeLast();
+
+        //2. Updating the board
+        Cell cell = game.getBoard().getCells().get(lastCellMove.getRow()).get(lastCellMove.getCol());
+        cell.setPlayer(null);
+        cell.setCellState(CellState.FREE);
+
+        // Update the current player index.
+        this.game.currPlayerIndex = (game.getCurrPlayerIndex() - 1 + game.getPlayerList().size()) % game.getPlayerList().size();
+    }
 }

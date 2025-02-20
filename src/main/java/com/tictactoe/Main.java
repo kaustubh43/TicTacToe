@@ -17,7 +17,7 @@ public class Main {
             gc.makeNextMove();
         }
         if(game.getGameState() == GameState.WIN){
-            System.out.printf("%s wins!", game.getWinner().getName());
+            System.out.printf("%s wins!\n", game.getWinner().getName());
             System.out.println("Winning Board");
             game.getBoard().displayBoard();
         }

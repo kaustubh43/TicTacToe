@@ -1,10 +1,6 @@
 package main.java.com.tictactoe.controller;
 
-import main.java.com.tictactoe.models.Game;
-import main.java.com.tictactoe.models.GameState;
-import main.java.com.tictactoe.models.HumanPlayer;
-import main.java.com.tictactoe.models.Player;
-import main.java.com.tictactoe.models.Cell;
+import main.java.com.tictactoe.models.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,13 +23,8 @@ public class GameController {
         int N = sc.nextInt();
 
         List<Player> players = new ArrayList<>();
-        for(int i = 0; i < N - 1; i++) {
-            System.out.println("Enter the player name");
-            String playerName = sc.next();
-            System.out.println("Enter the player symbol");
-            String playerSymbol = sc.next();
-
-            players.add(new HumanPlayer(playerName, playerSymbol.charAt(0), i + 1));
+        for(int id = 0; id < N - 1; id++) {
+            players.add(getPlayerFromUser(id));
         }
         return new Game(N, players);
     }
@@ -47,6 +38,7 @@ public class GameController {
      * 5. Displays the moves.
      */
     public void makeNextMove() {
+        // Check if board is full, before proceeding with the steps.
         if (game.board.isBoardFull()) {
             game.setDraw();
             return;
@@ -62,5 +54,28 @@ public class GameController {
 
         // 4: Check all the winning strategies.
         game.postMoveWinnerCheck();
+    }
+
+    public static Player getPlayerFromUser(int playerId) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter the player name");
+        String playerName = sc.next();
+        System.out.println("Enter the player symbol");
+        String playerSymbol = sc.next();
+        System.out.println("Is it a bot player ? (Y/N)");
+        String botPlayer = sc.next();
+        if(botPlayer.equalsIgnoreCase("Y")) {
+            System.out.println("Enter the difficulty level (1/2/3)");
+            int val = sc.nextInt();
+            BotDifficultyLevel botDifficultyLevel = switch (val){
+                case 1 -> BotDifficultyLevel.EASY;
+                // Medium is default, hence no explicit mention.
+                case 3 -> BotDifficultyLevel.HARD;
+                default -> BotDifficultyLevel.MEDIUM;
+            };
+            System.out.printf("%s difficulty level selected.\n", botDifficultyLevel);
+            return new BotPlayer(playerName, playerSymbol.charAt(0), playerId + 1, botDifficultyLevel);
+        }
+        return new HumanPlayer(playerName, playerSymbol.charAt(0), playerId + 1);
     }
 }

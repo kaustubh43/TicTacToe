@@ -15,6 +15,6 @@ public abstract class Player {
     /**
      * @return Cell object
      */
-    public abstract Cell makeMove();
+    public abstract Cell makeMove(Board board, Player player);
     // human player or bot player will implement this method.
 }

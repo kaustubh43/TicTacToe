@@ -1,22 +1,22 @@
 package main.java.com.tictactoe.models;
 
+import main.java.com.tictactoe.strategy.BotPlayingStrategy;
+import main.java.com.tictactoe.strategy.BotPlayingStrategyFactory;
+
 import java.util.Scanner;
 
 public class BotPlayer extends Player {
     public BotDifficultyLevel botDifficultyLevel;
+    public BotPlayingStrategy botPlayingStrategy;
 
-    public BotPlayer(String name, Character symbol, int id) {
+    public BotPlayer(String name, Character symbol, int id, BotDifficultyLevel botDifficultyLevel) {
         super(name, symbol, id);
+        this.botDifficultyLevel = botDifficultyLevel;
+        this.botPlayingStrategy = BotPlayingStrategyFactory.getBotPlayingStrategy(botDifficultyLevel);
     }
 
     @Override
-    public Cell makeMove() {
-        Scanner sc = new Scanner(System.in);
-        System.out.println("What is your next move");
-        // Todo: Implement bot player functionality. try to use chat gpt api.
-        int row = sc.nextInt();
-        int col = sc.nextInt();
-
-        return new Cell(row, col);
+    public Cell makeMove(Board board, Player player) {
+        return botPlayingStrategy.suggestMove(player, board);
     }
 }

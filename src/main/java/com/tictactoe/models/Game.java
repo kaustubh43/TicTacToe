@@ -49,7 +49,7 @@ public class Game {
     public void makeMoveForCurrentPlayer() {
         Player currentPlayer = playerList.get(currPlayerIndex);
         // Get the move in Cell object format.
-        Cell cell= currentPlayer.makeMove();
+        Cell cell= currentPlayer.makeMove(board, currentPlayer);
 
         // 3: Update the board with the intended move (cell object), if it fails
         //    then recurse.

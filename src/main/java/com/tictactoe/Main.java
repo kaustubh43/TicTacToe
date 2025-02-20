@@ -13,22 +13,22 @@ public class Main {
         GameController gc = new GameController(game);
 
         while(game.getGameState() == GameState.IN_PROGRESS){
-            game.getBoard().displayBoard();
+            gc.boardController.displayBoard();
             // Prints the next player's move.
             // Ask the user for an input.
             gc.makeNextMove();
-            game.getBoard().displayBoard();
+            gc.boardController.displayBoard();
             System.out.println("Do you want to undo? (y/n)");       // Todo: implement undo only for humans.
             Scanner sc = new Scanner(System.in);
             String input = sc.nextLine();
-            if(input.equals("y")){
+            if(input.equalsIgnoreCase("y")){
                 gc.undoLastMove();
             }
         }
         if(game.getGameState() == GameState.WIN){
             System.out.printf("%s wins!\n", game.getWinner().getName());
             System.out.println("Winning Board");
-            game.getBoard().displayBoard();
+            gc.boardController.displayBoard();
         }
         else{
             System.out.println("Draw!");

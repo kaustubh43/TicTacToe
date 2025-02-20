@@ -9,9 +9,11 @@ import java.util.Scanner;
 public class GameController {
 
     Game game;
+    public BoardController boardController;
 
     public GameController(Game game) {
         this.game = game;
+        this.boardController = new BoardController(game.getBoard());
         // After initialisation set game to "IN_PROGRESS"
         game.setGameState(GameState.IN_PROGRESS);
     }
@@ -39,7 +41,7 @@ public class GameController {
      */
     public void makeNextMove() {
         // Check if board is full, before proceeding with the steps.
-        if (game.board.isBoardFull()) {
+        if (boardController.isBoardFull()) {
             game.setDraw();
             return;
         }
@@ -50,7 +52,7 @@ public class GameController {
 
         // 2: Gets the move from the current player into a "Cell" object
         System.out.printf("It is %s's turn\n", currentPlayer.getName());
-        game.makeMoveForCurrentPlayer();
+        this.makeMoveForCurrentPlayer();
 
         // 4: Check all the winning strategies.
         game.postMoveWinnerCheck();
@@ -91,5 +93,25 @@ public class GameController {
 
         // Update the current player index.
         this.game.currPlayerIndex = (game.getCurrPlayerIndex() - 1 + game.getPlayerList().size()) % game.getPlayerList().size();
+    }
+
+    /**
+     * This method makes the next player decide a move and updates the board.
+     * It updates the moves List as well.
+     */
+    public void makeMoveForCurrentPlayer() {
+        Player currentPlayer = game.getPlayerList().get(game.getCurrPlayerIndex());
+        // Get the move in Cell object format.
+        Cell cell= currentPlayer.makeMove(game.getBoard(), currentPlayer);
+
+        // 3: Update the board with the intended move (cell object), if it fails
+        //    then recurse.
+        try{
+            this.boardController.updateBoard(cell, currentPlayer);
+            this.game.updateMoves(cell);      // Update moves on that cell
+        } catch (Exception e){
+            System.out.printf("Not a valid move! Try again: %s\n", currentPlayer.getName());
+            makeMoveForCurrentPlayer();
+        }
     }
 }

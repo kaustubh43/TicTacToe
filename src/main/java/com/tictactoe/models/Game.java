@@ -42,26 +42,6 @@ public class Game {
         moves.add(cell);
     }
 
-    /**
-     * This method makes the next player decide a move and updates the board.
-     * It updates the moves List as well.
-     */
-    public void makeMoveForCurrentPlayer() {
-        Player currentPlayer = playerList.get(currPlayerIndex);
-        // Get the move in Cell object format.
-        Cell cell= currentPlayer.makeMove(board, currentPlayer);
-
-        // 3: Update the board with the intended move (cell object), if it fails
-        //    then recurse.
-        try{
-            this.board.updateBoard(cell, currentPlayer);
-            this.updateMoves(cell);      // Update moves on that cell
-        } catch (Exception e){
-            System.out.printf("Not a valid move! Try again: %s\n", currentPlayer.getName());
-            makeMoveForCurrentPlayer();
-        }
-    }
-
     public void postMoveWinnerCheck() {
         // Check Winning Strategies
         boolean isWin = this.getWinningStrategies().stream()

@@ -4,12 +4,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
+@Setter
 public class Cell {
     int row, col;
 
-    @Setter
     Player player;
-    @Setter
     CellState cellState;
 
     public Cell(int row, int col) {
